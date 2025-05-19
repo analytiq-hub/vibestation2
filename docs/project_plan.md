@@ -232,7 +232,8 @@ Successful completion is defined by all phases' AI-Verifiable End Goals being me
 Successful completion of the overall project goal will be validated by:
 1.  **All Phase AI-Verifiable End Goals Met:** Confirmation that all AI-Verifiable End Goals for Phases 1 through 6 have been achieved as per their definitions.
 2.  **Successful Execution of All Unit Tests:** The command `npm test` executes and all unit tests pass, with code coverage reports meeting the defined project standard.
-3.  **Core Feature Manual Smoke Test (checklist based on PRD MVP Objectives):**
+3.  **Implementation Tests Passing:** All implementation tests defined in [Implementation Tests](implementation-tests.md) for the completed phases are passing, providing verification of each feature's functionality.
+4.  **Core Feature Manual Smoke Test (checklist based on PRD MVP Objectives):**
     *   Application launches successfully (`Micro-task 1.2`).
     *   User can type a message and receive a (mocked or live if configured) response from a configured AI model (e.g., Anthropic Claude Sonnet 3.7) (`Micro-task 2.2, 2.3`).
     *   The Stripe MCP tool can be (conceptually, through AI prompting or a developer debug interface) invoked, and if prompted for an action like "create a payment link", the (mocked or live) tool result leads to an HTML link being displayed in the artifact window (`Micro-task 4.2, 4.3, 5.3`).

@@ -7,6 +7,8 @@
 3. [Data Flow](data-flow.md)
 4. [Security Architecture](security-architecture.md)
 5. [Implementation Guide](implementation-guide.md)
+6. [Implementation Tests](implementation-tests.md)
+7. [Requesty Integration](requesty-integration.md)
 
 ## Architecture Overview
 
@@ -38,15 +40,19 @@ graph TD
     RendererProcess --> MCPService[MCP Service]
     RendererProcess --> ChatHistoryService[Chat History Service]
     
-    AIService --> VercelAISDK[Vercel AI-SDK]
+    AIService --> MCPService
     MCPService --> MCPClient[MCP Client]
+    
+    MCPClient --> RequestyMCP[Requesty MCP Server]
+    RequestyMCP --> ExternalAIModels[External AI Models]
     
     MCPClient --> StripeTool[Stripe MCP Tool]
     StripeTool --> StripeSDK[Stripe SDK]
     
     ChatHistoryService --> LocalStorage[Local Storage]
     
-    VercelAISDK <--> ExternalAIModels[External AI Models]
+    ExternalAIModels --> Claude[Claude]
+    ExternalAIModels --> OpenAI[ChatGPT/OpenAI]
     StripeSDK <--> StripeAPI[Stripe API]
     
     ConfigService[Configuration Service] --> AIService
@@ -63,21 +69,25 @@ graph TD
 
 4. **MCP Service**: Manages MCP servers and tools via the `mcp-client` library, dispatching tool calls to appropriate MCP tools.
 
-5. **Stripe MCP Tool**: Provides Stripe functionality as an MCP tool, including listing payments, checking account balance, and creating payment links.
+5. **Requesty MCP Server**: Handles AI model interactions through the Requesty proxy service, providing unified logging, rate limiting, and credential management.
 
-6. **Chat History Service**: Manages local storage of chat history, allowing users to save and load chat sessions.
+6. **Stripe MCP Tool**: Provides Stripe functionality as an MCP tool, including listing payments, checking account balance, and creating payment links.
 
-7. **Configuration Service**: Manages application configuration, loading settings from configuration files and secure storage.
+7. **Chat History Service**: Manages local storage of chat history, allowing users to save and load chat sessions.
 
-8. **Chakra UI Theme**: Provides consistent styling and theming across the application with support for both light and dark modes.
+8. **Configuration Service**: Manages application configuration, loading settings from configuration files and secure storage.
+
+9. **Chakra UI Theme**: Provides consistent styling and theming across the application with support for both light and dark modes.
 
 ### Key Data Flows
 
-1. **Chat Interaction Flow**: User input → AI processing → AI response (with potential tool calls) → Display response
+1. **Chat Interaction Flow**: User input → AI Service → MCP Service → Requesty MCP Server → AI provider → Response → Display response
 
 2. **Tool Execution Flow**: AI model requests tool action → Tool call dispatched to appropriate MCP tool → Tool executes action → Result returned to AI → AI processes result → Display final response
 
 3. **Chat History Flow**: Save chat session → Store in local storage → List available sessions → User selects session → Load chat session → Display messages
+
+4. **Requesty Flow**: AI Service request → MCP Service → Requesty MCP Server → Requesty proxy service → AI provider API → Response → Back through chain
 
 ### Security Considerations
 
@@ -99,8 +109,9 @@ The implementation follows a phased approach as detailed in the [Project Plan](p
 2. AI Model Connectivity and Basic Chat Interface
 3. MCP Client Integration and Basic Tool Loading
 4. Stripe MCP Tool Implementation and AI Tool Calling
-5. Advanced Chat Features and UI Refinements
-6. Comprehensive Testing, Refinement, and Finalization
+5. Requesty MCP Server Implementation and Integration
+6. Advanced Chat Features and UI Refinements
+7. Comprehensive Testing, Refinement, and Finalization
 
 ## Next Steps
 
@@ -111,3 +122,5 @@ For detailed information about specific aspects of the architecture, refer to th
 - [Data Flow](data-flow.md) - Data flow diagrams and sequence diagrams
 - [Security Architecture](security-architecture.md) - Security considerations and implementation
 - [Implementation Guide](implementation-guide.md) - Practical guidance for implementing the architecture
+- [Implementation Tests](implementation-tests.md) - Comprehensive test specifications for tracking feature development
+- [Requesty Integration](requesty-integration.md) - Integration design for using Requesty as an MCP server for AI provider interactions
